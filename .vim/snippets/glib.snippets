@@ -1,0 +1,526 @@
+# Show a widget
+snippet show
+	gtk_widget_show(${1});
+	${2}
+
+# Attach a signal
+snippet signal
+	g_signal_connect(${1},
+	                 "${2}",
+	                 G_CALLBACK(${3}),
+	                 NULL);
+
+# A ref-counted struct
+snippet cref
+	#include "${1}.h"
+
+	struct _${2:ExampleStruct}
+	{
+		volatile gint ref_count;
+	};
+
+	static void
+	$3_destroy ($2 *$4)
+	{
+		/* cleanup struct resources */
+	}
+
+	/**
+	 * $3_new:
+	 *
+	 * Creates a new instance of #$2.
+	 *
+	 * Returns: the newly created instance.
+	 */
+	$2*
+	${3:example_struct}_new (void)
+	{
+		$2 *${4:ex_struct};
+
+		$4 = g_slice_new0($2);
+		$4->ref_count = 1;
+		${5:/* add default values */}
+
+		return $4;
+	}
+
+	/**
+	 * $2_ref:
+	 * @$4: A #$2.
+	 *
+	 * Atomically increments the reference count of @$4 by one.
+	 *
+	 * Returns: A reference to @$4.
+	 * Side effects: None.
+	 */
+	$2*
+	$3_ref ($2 *$4)
+	{
+		g_return_val_if_fail($4 != NULL, NULL);
+		g_return_val_if_fail($4->ref_count > 0, NULL);
+
+		g_atomic_int_inc(&$4->ref_count);
+		return $4;
+	}
+
+	/**
+	 * $3_unref:
+	 * @$4: A $2.
+	 *
+	 * Atomically decrements the reference count of @$4 by one.  When the
+	 * reference count reaches zero, the structure will be destroyed and
+	 * freed.
+	 *
+	 * Returns: None.
+	 * Side effects: The structure will be freed when the reference count
+	 *   reaches zero.
+	 */
+	void
+	$3_unref ($2 *$4)
+	{
+		g_return_if_fail($4 != NULL);
+		g_return_if_fail($4->ref_count > 0);
+
+		if (g_atomic_int_dec_and_test(&$4->ref_count)) {
+			$3_destroy($4);
+			g_slice_free($2, $4);
+		}
+	}
+
+# A ref-counted struct (header)
+snippet href
+	#ifndef __$2_$3_H__
+	#define __$2_$3_H__
+
+	#include <glib-object.h>
+
+	G_BEGIN_DECLS
+
+	#define ${2:EXAMPLE}_TYPE_${3:STRUCT} (${4:example}_${5:struct}_get_type())
+
+	typedef struct _$1 ${1:ExampleStruct};
+
+	GType $4_$5_get_type (void) G_GNUC_CONST;
+	$1* $4_$5_new      (void);
+	$1* $4_$5_ref      ($1 *$5);
+	void $4_$5_unref    ($1 *$5);
+	${6}
+
+	G_END_DECLS
+
+	#endif /* __$2_$3_H__ */
+
+snippet doc
+	/**
+	 * ${1}:
+	 * @${2}: A #${3}.
+	 *
+	 * ${4:This method ...}
+	 *
+	 * Returns: ${5:None.}
+	 * Side effects: ${6:None.}
+	 */
+	${7}
+
+snippet gpl
+	/* ${1:filename}
+	 *
+	 * Copyright (C) ${2:2010} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
+	 * 
+	 * This program is free software: you can redistribute it and/or modify
+	 * it under the terms of the GNU General Public License as published by
+	 * the Free Software Foundation, either version 3 of the License, or
+	 * (at your option) any later version.
+	 * 
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU General Public License for more details.
+	 * 
+	 * You should have received a copy of the GNU General Public License
+	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 */
+	${5}
+
+snippet lgpl
+	/* filename
+	 *
+	 * Copyright (C) ${2:2010} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
+	 *
+	 * This file is free software; you can redistribute it and/or
+	 * modify it under the terms of the GNU Lesser General Public
+	 * License as published by the Free Software Foundation; either
+	 * version 2.1 of the License, or (at your option) any later version.
+	 * 
+	 * This file is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	 * Lesser General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU General Public License
+	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 */
+	${5}
+
+snippet inside
+	#if !defined (__${1:MY_PROJECT}_INSIDE__) && !defined ($1_COMPILATION)
+	#error "Only <${2:my-project/my-project}.h> can be included directly."
+	#endif
+	${3}
+
+snippet once
+	static gsize once_init = FALSE;
+
+	if (g_once_init_enter(&once_init)) {
+		${1}
+		g_once_init_leave(&once_init, TRUE);
+	}
+
+snippet window
+	gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	${1}
+
+snippet button
+	gtk_button_new();
+	${1}
+
+snippet label
+	gtk_label_new("${1:label}");
+	${2}
+
+snippet hbox
+	gtk_hbox_new(FALSE, 0);
+	${1}
+
+snippet vbox
+	gtk_vbox_new(FALSE, 0);
+	${1}
+
+snippet packstart
+	gtk_box_pack_start(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);
+	${4}
+
+snippet packend
+	gtk_box_pack_end(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);
+	${4}
+
+snippet addchild
+	gtk_container_add(GTK_CONTAINER(${1:parent}), ${2:child});
+	${3}
+
+snippet scroller
+	gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(${1:scroller}),
+	                               GTK_POLICY_AUTOMATIC,
+	                               GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW($1),
+	                                    GTK_SHADOW_NONE);
+	${2}
+
+snippet gtkmain
+	#include <stdlib.h>
+	#include <glib.h>
+	#include <glib/gi18n.h>
+	#include <gtk/gtk.h>
+
+	static GOptionEntry options[] = {
+		{ NULL }
+	};
+
+	gint
+	main (gint   argc,
+	      gchar *argv[])
+	{
+		GOptionContext *context;
+		GError *error = NULL;
+
+		/* initialize i18n */
+		textdomain(GETTEXT_PACKAGE);
+		bindtextdomain(GETTEXT_PACKAGE, LOCALE_DIR);
+		bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+		g_set_application_name(_("${1:AppName}"));
+
+		/* initialize threading early */
+		g_thread_init(NULL);
+
+		/* parse command line arguments */
+		context = g_option_context_new(_("- $1"));
+		g_option_context_add_main_entries(context, options, GETTEXT_PACKAGE);
+		g_option_context_add_group(context, gtk_get_option_group(FALSE));
+		if (!g_option_context_parse(context, &argc, &argv, &error)) {
+			g_printerr("%s\n", error->message);
+			g_error_free(error);
+			return EXIT_FAILURE;
+		}
+
+		${2}
+
+		return EXIT_SUCCESS;
+	}
+
+snippet glibmain
+	#include <stdlib.h>
+	#include <glib.h>
+	#include <glib/gi18n.h>
+
+	static GOptionEntry options[] = {
+		{ NULL }
+	};
+
+	gint
+	main (gint   argc,
+	      gchar *argv[])
+	{
+		GOptionContext *context;
+		GError *error = NULL;
+
+		/* initialize i18n */
+		textdomain(GETTEXT_PACKAGE);
+		bindtextdomain(GETTEXT_PACKAGE, LOCALE_DIR);
+		bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+		g_set_application_name(_("${1:AppName}"));
+
+		/* parse command line arguments */
+		context = g_option_context_new(_("- $1"));
+		g_option_context_add_main_entries(context, options, GETTEXT_PACKAGE);
+		if (!g_option_context_parse(context, &argc, &argv, &error)) {
+			g_printerr("%s\n", error->message);
+			g_error_free(error);
+			return EXIT_FAILURE;
+		}
+
+		/* Initialize libraries */
+		g_thread_init(NULL);
+		g_type_init();
+
+		${2}
+
+		return EXIT_SUCCESS;
+	}
+
+snippet setproperty
+	static void
+	${1:example_object}_set_property (GObject      *object,
+	                                  guint         prop_id,
+	                                  const GValue *value,
+	                                  GParamSpec   *pspec)
+	{
+		switch (prop_id) {
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		}
+	}
+
+snippet getproperty
+	static void
+	${1:example_object}_get_property (GObject    *object,
+	                                  guint       prop_id,
+	                                  GValue     *value,
+	                                  GParamSpec *pspec)
+	{
+		switch (prop_id) {
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		}
+	}
+
+snippet dispose
+	static void
+	${1:example_object}_dispose (GObject *object)
+	{
+		G_OBJECT_CLASS($1_parent_class)->dispose(object);
+	}
+
+snippet quark
+	GQuark
+	${1:example_object}_error_quark (void)
+	{
+		return g_quark_from_static_string("${2:example-object}-error-quark");
+	}
+
+snippet hquark
+	GQuark ${1:example_object}_error_quark (void) G_GNUC_CONST;
+
+snippet hobject
+	#ifndef __${1:EXAMPLE}_${2:OBJECT}_H__
+	#define __$1_$2_H__
+
+	#include <glib-object.h>
+
+	G_BEGIN_DECLS
+
+	#define $1_TYPE_$2            (${3:example}_${4:object}_get_type())
+	#define $1_$2(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), $1_TYPE_$2, $5))
+	#define $1_$2_CONST(obj)      (G_TYPE_CHECK_INSTANCE_CAST ((obj), $1_TYPE_$2, $5 const))
+	#define $1_$2_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  $1_TYPE_$2, $5Class))
+	#define $1_IS_$2(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), $1_TYPE_$2))
+	#define $1_IS_$2_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  $1_TYPE_$2))
+	#define $1_$2_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  $1_TYPE_$2, $5Class))
+
+	typedef struct _$5        $5;
+	typedef struct _$5Class   $5Class;
+	typedef struct _$5Private $5Private;
+
+	struct _${5:ExampleObject}
+	{
+		GObject parent;
+
+		/*< private >*/
+		$5Private *priv;
+	};
+
+	struct _$5Class
+	{
+		GObjectClass parent_class;
+	};
+
+	GType $3_$4_get_type (void) G_GNUC_CONST;
+	$5* $3_$4_new (void);
+	${6}
+
+	G_END_DECLS
+
+	#define /* __$1_$2_H__ */
+
+snippet cobject
+	#include "${1:example-object}.h"
+
+	/**
+	 * SECTION:$1
+	 * @title: $2
+	 * @short_description: 
+	 *
+	 * Section overview.
+	 */
+
+	G_DEFINE_TYPE(${2:ExampleObject}, ${3:example_object}, ${4:G_TYPE_OBJECT})
+
+	struct _$2Private
+	{
+		gpointer dummy;
+	};
+
+	/**
+	 * $3_new:
+	 *
+	 * Creates a new instance of #$2.
+	 *
+	 * Returns: the newly created instance of #$2.
+	 * Side effects: None.
+	 */
+	$2*
+	$3_new (void)
+	{
+		return g_object_new(${5:EXAMPLE}_TYPE_${6:OBJECT});
+	}
+
+	static void
+	$3_finalize (GObject *object)
+	{
+		G_OBJECT_CLASS($3_parent_class)->finalize(object);
+	}
+
+	static void
+	$3_class_init ($2Class *klass)
+	{
+		GObjectClass object_class;
+
+		object_class = G_OBJECT_CLASS(klass);
+		object_class->finalize = $3_finalize;
+	}
+
+	static void
+	$3_init ($2 *${7:object})
+	{
+		$7->priv = G_TYPE_INSTANCE_GET_PRIVATE($7,
+		                                       $5_TYPE_$6,
+		                                       $2Private);
+
+		${8}
+	}
+
+snippet config
+	#if HAVE_CONFIG_H
+	#include "config.h"
+	#endif
+
+snippet iface
+	#include "${1:example-iface}.h"
+
+	GType
+	${2:example_iface}_get_type (void)
+	{
+		static GType type_id = 0;
+
+		if (g_once_init_enter((gsize *)&type_id)) {
+			GType _type_id;
+			const GTypeInfo g_type_info = {
+				sizeof(${3:Example}Iface),
+				NULL, /* base_init */
+				NULL, /* base_finalize */
+				NULL, /* class_init */
+				NULL, /* class_finalize */
+				NULL, /* class_data */
+				0,    /* instance_size */
+				0,    /* n_preallocs */
+				NULL, /* instance_init */
+				NULL  /* value_vtable */
+			};
+
+			_type_id = g_type_register_static(G_TYPE_INTERFACE,
+			                                  "$3",
+			                                  &g_type_info,
+			                                  o);
+			g_type_interface_add_prerequisite(_type_id, G_TYPE_OBJECT);
+			g_once_init_leave((gsize *)&type_id, _type_id);
+		}
+	}
+
+snippet hiface
+	#ifndef __$1_$2_H__
+	#define __$1_$2_H__
+
+	#include <glib-object.h>
+
+	G_BEGIN_DECLS
+
+	#define ${1:EXAMPLE}_TYPE_${2:IFACE}             (${3:example}_${4:iface}_get_type())
+	#define $1_$2(o)               (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2, $3))
+	#define $1_IS_$2(o)            (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2))
+	#define $1_$2_GET_INTERFACE(o) (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2, $3Iface))
+
+	typedef struct _$5 ${5:ExampleIface};
+	typedef struct _$5Iface $5Iface;
+
+	struct _$5Iface
+	{
+		GTypeInterface parent;
+
+		${6:/* interface methods */}
+	};
+
+	GType $3_$4_get_type (void) G_GNUC_CONST;
+	${7}
+
+	G_END_DECLS
+
+	#endif /* __$1_$2_H__ */
+
+snippet prepend
+	$1 = g_list_prepend(${1:list}, ${2:data});
+	${3}
+
+snippet append
+	$1 = g_list_append(${1:list}, ${2:data});
+	${3}
+
+snippet method
+	void
+	${1:example}_${2:object}_${3:do_something} ($
+
+snippet fail
+	g_return_if_fail(${1:ptr}${2: != NULL});
+
+snippet failv
+	g_return_val_if_fail(${1:ptr}${2: != NULL}, ${3:NULL});
+
