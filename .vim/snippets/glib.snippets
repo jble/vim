@@ -2,14 +2,12 @@
 snippet show
 	gtk_widget_show(${1});
 	${2}
-
 # Attach a signal
 snippet signal
 	g_signal_connect(${1},
 	                 "${2}",
 	                 G_CALLBACK(${3}),
 	                 NULL);
-
 # A ref-counted struct
 snippet cref
 	#include "${1}.h"
@@ -86,7 +84,6 @@ snippet cref
 			g_slice_free($2, $4);
 		}
 	}
-
 # A ref-counted struct (header)
 snippet href
 	#ifndef __$2_$3_H__
@@ -121,7 +118,6 @@ snippet doc
 	 * Side effects: ${6:None.}
 	 */
 	${7}
-
 snippet gpl
 	/* ${1:filename}
 	 *
@@ -167,7 +163,6 @@ snippet inside
 	#error "Only <${2:my-project/my-project}.h> can be included directly."
 	#endif
 	${3}
-
 snippet once
 	static gsize once_init = FALSE;
 
@@ -175,39 +170,30 @@ snippet once
 		${1}
 		g_once_init_leave(&once_init, TRUE);
 	}
-
 snippet window
 	gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	${1}
-
 snippet button
 	gtk_button_new();
 	${1}
-
 snippet label
 	gtk_label_new("${1:label}");
 	${2}
-
 snippet hbox
 	gtk_hbox_new(FALSE, 0);
 	${1}
-
 snippet vbox
 	gtk_vbox_new(FALSE, 0);
 	${1}
-
 snippet packstart
 	gtk_box_pack_start(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);
 	${4}
-
 snippet packend
 	gtk_box_pack_end(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);
 	${4}
-
 snippet addchild
 	gtk_container_add(GTK_CONTAINER(${1:parent}), ${2:child});
 	${3}
-
 snippet scroller
 	gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(${1:scroller}),
@@ -216,7 +202,6 @@ snippet scroller
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW($1),
 	                                    GTK_SHADOW_NONE);
 	${2}
-
 snippet gtkmain
 	#include <stdlib.h>
 	#include <glib.h>
@@ -257,7 +242,6 @@ snippet gtkmain
 
 		return EXIT_SUCCESS;
 	}
-
 snippet glibmain
 	#include <stdlib.h>
 	#include <glib.h>
@@ -297,7 +281,6 @@ snippet glibmain
 
 		return EXIT_SUCCESS;
 	}
-
 snippet setproperty
 	static void
 	${1:example_object}_set_property (GObject      *object,
@@ -310,7 +293,6 @@ snippet setproperty
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		}
 	}
-
 snippet getproperty
 	static void
 	${1:example_object}_get_property (GObject    *object,
@@ -323,24 +305,20 @@ snippet getproperty
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		}
 	}
-
 snippet dispose
 	static void
 	${1:example_object}_dispose (GObject *object)
 	{
 		G_OBJECT_CLASS($1_parent_class)->dispose(object);
 	}
-
 snippet quark
 	GQuark
 	${1:example_object}_error_quark (void)
 	{
 		return g_quark_from_static_string("${2:example-object}-error-quark");
 	}
-
 snippet hquark
 	GQuark ${1:example_object}_error_quark (void) G_GNUC_CONST;
-
 snippet hobject
 	#ifndef __${1:EXAMPLE}_${2:OBJECT}_H__
 	#define __$1_$2_H__
@@ -381,7 +359,6 @@ snippet hobject
 	G_END_DECLS
 
 	#endif /* __$1_$2_H__ */
-
 snippet cobject
 	#include "${1:example-object}.h"
 
@@ -427,6 +404,7 @@ snippet cobject
 
 		object_class = G_OBJECT_CLASS(klass);
 		object_class->finalize = $3_finalize;
+		g_type_class_add_private(object_class, sizeof($2Private));
 	}
 
 	static void
@@ -438,15 +416,12 @@ snippet cobject
 
 		${8}
 	}
-
 snippet config
 	#if HAVE_CONFIG_H
 	#include "config.h"
 	#endif
-
 snippet iface
 	#include "${1:example-iface}.h"
-
 	GType
 	${2:example_iface}_get_type (void)
 	{
@@ -475,7 +450,6 @@ snippet iface
 			g_once_init_leave((gsize *)&type_id, _type_id);
 		}
 	}
-
 snippet hiface
 	#ifndef __$1_$2_H__
 	#define __$1_$2_H__
@@ -505,22 +479,17 @@ snippet hiface
 	G_END_DECLS
 
 	#endif /* __$1_$2_H__ */
-
 snippet prepend
-	$1 = g_list_prepend(${1:list}, ${2:data});
-	${3}
-
+	$1 = g_list_prepend(${1:list}, ${2:data});${3}
 snippet append
-	$1 = g_list_append(${1:list}, ${2:data});
-	${3}
-
+	$1 = g_list_append(${1:list}, ${2:data});${3}
 snippet method
 	void
-	${1:example}_${2:object}_${3:do_something} ($
-
+	${1:example}_${2:object}_${3:do_something} (${4:void})
+	{
+		${5}
+	}
 snippet fail
-	g_return_if_fail(${1:ptr}${2: != NULL});
-
-snippet failv
-	g_return_val_if_fail(${1:ptr}${2: != NULL}, ${3:NULL});
-
+	g_return_if_fail(${1:ptr}${2: != NULL});${4}
+snippet vfail
+	g_return_val_if_fail(${1:ptr}${2: != NULL}, ${3:NULL});${4}
