@@ -119,7 +119,7 @@ snippet doc
 	 */
 	${7}
 snippet gpl
-	/* ${1:filename}
+	/* ${1:`Filename("$1.h")`}
 	 *
 	 * Copyright (C) ${2:2010} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
 	 * 
@@ -139,7 +139,7 @@ snippet gpl
 	${5}
 
 snippet lgpl
-	/* filename
+	/* ${1:`Filename("$1.h")`}
 	 *
 	 * Copyright (C) ${2:2010} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
 	 *
