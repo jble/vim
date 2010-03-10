@@ -319,7 +319,7 @@ snippet quark
 	}
 snippet hquark
 	GQuark ${1:example_object}_error_quark (void) G_GNUC_CONST;
-snippet hobject
+snippet hobj
 	#ifndef __${1:EXAMPLE}_${2:OBJECT}_H__
 	#define __$1_$2_H__
 
@@ -359,7 +359,7 @@ snippet hobject
 	G_END_DECLS
 
 	#endif /* __$1_$2_H__ */
-snippet cobject
+snippet cobj
 	#include "${1:example-object}.h"
 
 	/**
@@ -445,10 +445,12 @@ snippet iface
 			_type_id = g_type_register_static(G_TYPE_INTERFACE,
 			                                  "$3",
 			                                  &g_type_info,
-			                                  o);
+			                                  0);
 			g_type_interface_add_prerequisite(_type_id, G_TYPE_OBJECT);
 			g_once_init_leave((gsize *)&type_id, _type_id);
 		}
+
+		return type_id;
 	}
 snippet hiface
 	#ifndef __$1_$2_H__
@@ -459,9 +461,9 @@ snippet hiface
 	G_BEGIN_DECLS
 
 	#define ${1:EXAMPLE}_TYPE_${2:IFACE}             (${3:example}_${4:iface}_get_type())
-	#define $1_$2(o)               (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2, $3))
+	#define $1_$2(o)               (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2, $5))
 	#define $1_IS_$2(o)            (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2))
-	#define $1_$2_GET_INTERFACE(o) (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2, $3Iface))
+	#define $1_$2_GET_INTERFACE(o) (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2, $5Iface))
 
 	typedef struct _$5 ${5:ExampleIface};
 	typedef struct _$5Iface $5Iface;
