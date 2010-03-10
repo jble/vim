@@ -388,7 +388,7 @@ snippet cobj
 	$2*
 	$3_new (void)
 	{
-		return g_object_new(${5:EXAMPLE}_TYPE_${6:OBJECT});
+		return g_object_new(${5:EXAMPLE}_TYPE_${6:OBJECT}, NULL);
 	}
 
 	static void
