@@ -160,7 +160,7 @@ snippet lgpl
 
 snippet inside
 	#if !defined (__${1:MY_PROJECT}_INSIDE__) && !defined ($1_COMPILATION)
-	#error "Only <${2:my-project/my-project}.h> can be included directly."
+	#error "Only <${2:my-project}/$2.h> can be included directly."
 	#endif
 	${3}
 snippet once
