@@ -461,9 +461,9 @@ snippet hiface
 	G_BEGIN_DECLS
 
 	#define ${1:EXAMPLE}_TYPE_${2:IFACE}             (${3:example}_${4:iface}_get_type())
-	#define $1_$2(o)               (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2, $5))
-	#define $1_IS_$2(o)            (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2))
-	#define $1_$2_GET_INTERFACE(o) (G_TYPE_CHECK_INSTANCE_CAST((o), $1_TYPE_$2, $5Iface))
+	#define $1_$2(o)               (G_TYPE_CHECK_INSTANCE_CAST((o),    $1_TYPE_$2, $5))
+	#define $1_IS_$2(o)            (G_TYPE_CHECK_INSTANCE_TYPE((o),    $1_TYPE_$2))
+	#define $1_$2_GET_INTERFACE(o) (G_TYPE_INSTANCE_GET_INTERFACE((o), $1_TYPE_$2, $5Iface))
 
 	typedef struct _$5 ${5:ExampleIface};
 	typedef struct _$5Iface $5Iface;
