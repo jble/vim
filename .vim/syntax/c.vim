@@ -43,4 +43,5 @@ source $HOME/.vim/syntax/poppler.vim
 source $HOME/.vim/syntax/libwnck.vim
 source $HOME/.vim/syntax/vte.vim
 source $HOME/.vim/syntax/atspi.vim
+source $HOME/.vim/syntax/stdlib.vim
 
