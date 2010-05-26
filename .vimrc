@@ -61,6 +61,10 @@ au BufRead,BufNewFile *.vala            setfiletype vala
 au BufRead,BufNewFile *.vapi            setfiletype vala
 au! Syntax vala source $VIM/vim72/syntax/cs.vim
 
+" My RPC format
+au BufRead,BufNewFile *.rpc setfiletype rpc
+au! Syntax rpc source $HOME/.vim/syntax/rpc.vim
+
 " Enable line numbers
 set nu
 

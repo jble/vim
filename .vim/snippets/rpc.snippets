@@ -1,0 +1,22 @@
+snippet object
+	object ${1:Name} {
+		${2}
+	}
+snippet header
+	license client lgpl-3
+	license server gpl-3
+	copyright Copyright 2010 Christian Hergert <chris@dronelabs.com>
+	prefix client ${1:Client}
+	prefix server ${2:Server}
+
+	${3}
+snippet rpc
+	"""
+	${3:RPC Documentation}
+	"""
+	rpc ${1:my_rpc} (${2})
+	${4}
+snippet sing
+	singleton
+snippet str
+	string
