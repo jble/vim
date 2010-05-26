@@ -71,6 +71,9 @@ set bs=2
 set ai
 set ci
 
+" Highlight searches
+set hlsearch
+
 " Use 256 colormode jungle scheme
 set t_CO=256
 colorscheme jungle
