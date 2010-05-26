@@ -5,6 +5,7 @@ syn keyword stringFunc memccpy memcpy stpcpy stpncpy strcasecmp strcasecmp_l str
 syn keyword assertFunc assert
 syn keyword stdargFunc va_start va_end va_copy va_arg
 syn keyword baseType int32 uint32 int64 uint64 Bool uint8 int8 uint16 int16 va_list
+syn keyword stdlibMacro CLOCK_MONOTONIC CLOCK_REALTIME CLOCK_MONOTONIC_RAW CLOCK_PROCESS_CPUTIME_ID CLOCK_THREAD_CPUTIME_ID
 
 " Default highlighting
 if version >= 508
@@ -18,6 +19,7 @@ if version >= 508
   HiLink stdargFunc Function
   HiLink stringFunc Function
   HiLink baseType Type
+  HiLink stdlibMacro Macro
   delcommand HiLink
 endif
 
