@@ -82,5 +82,8 @@ colorscheme jungle
 map <F7> <Esc>:!clear && make<CR>
 map <C-F7> <Esc>:!clear && make clean && make<CR>
 
+" Highlight occurance of current word
+nnoremap <F8> :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
+
 " Load ctags
 set tags=./tags,/usr/include/tags
