@@ -554,3 +554,16 @@ snippet RE
 	RETURN(${1:ret});${2}
 snippet GSt
 	GStaticRWLock ${1}rw_lock;${2}
+snippet guard
+	#ifndef __${1:MY_STRUCT}_H__
+	#define __$1_H__
+
+	#include <glib.h>
+
+	G_BEGIN_DECLS
+
+	${2}
+
+	G_END_DECLS
+
+	#endif /* __$1_H__ */
