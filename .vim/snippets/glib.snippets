@@ -11,16 +11,27 @@ snippet signal
 # A ref-counted struct
 snippet cref
 	#include "${1}.h"
+	#include "trace.h"
 
 	struct _${2:ExampleStruct}
 	{
-		volatile gint ref_count;
+		volatile gint ref_count;${5}
 	};
 
+	/**
+	 * $3_dispose:
+	 * @$4: A #$2.
+	 *
+	 * Cleans up the #$2 instance and frees any allocated resources.
+	 *
+	 * Returns: None.
+	 * Side effects: None.
+	 */
 	static void
-	$3_destroy ($2 *$4)
+	$3_dispose ($2 *$4) /* IN */
 	{
-		/* cleanup struct resources */
+		ENTRY;
+		EXIT;
 	}
 
 	/**
@@ -28,18 +39,19 @@ snippet cref
 	 *
 	 * Creates a new instance of #$2.
 	 *
-	 * Returns: the newly created instance.
+	 * Returns: the newly created instance which should be freed with
+	 *   $3_unref().
+	 * Side effects: None.
 	 */
 	$2*
 	${3:example_struct}_new (void)
 	{
 		$2 *${4:ex_struct};
 
+		ENTRY;
 		$4 = g_slice_new0($2);
 		$4->ref_count = 1;
-		${5:/* add default values */}
-
-		return $4;
+		RETURN($4);
 	}
 
 	/**
@@ -57,8 +69,9 @@ snippet cref
 		g_return_val_if_fail($4 != NULL, NULL);
 		g_return_val_if_fail($4->ref_count > 0, NULL);
 
+		ENTRY;
 		g_atomic_int_inc(&$4->ref_count);
-		return $4;
+		RETURN($4);
 	}
 
 	/**
@@ -79,10 +92,12 @@ snippet cref
 		g_return_if_fail($4 != NULL);
 		g_return_if_fail($4->ref_count > 0);
 
+		ENTRY;
 		if (g_atomic_int_dec_and_test(&$4->ref_count)) {
-			$3_destroy($4);
+			$3_dispose($4);
 			g_slice_free($2, $4);
 		}
+		EXIT;
 	}
 # A ref-counted struct (header)
 snippet href
@@ -110,17 +125,17 @@ snippet href
 snippet doc
 	/**
 	 * ${1}:
-	 * @${2}: A #${3}.
+	 * @${2}: A #${3}.${7}
 	 *
 	 * ${4:This method ...}
 	 *
 	 * Returns: ${5:None.}
 	 * Side effects: ${6:None.}
-	 */${7}
+	 */
 snippet gpl
-	/* ${1:`Filename("$1.h")`}
+	/* ${1:`expand('%')`}
 	 *
-	 * Copyright (C) ${2:2010} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
+	 * Copyright (C) ${2:`system('date +%Y')`} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
 	 * 
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -136,11 +151,10 @@ snippet gpl
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 	${5}
-
 snippet lgpl
-	/* ${1:`Filename("$1.h")`}
+	/* ${1:`expand('%')`}
 	 *
-	 * Copyright (C) ${2:2010} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
+	 * Copyright (C) ${2:`system('date +%Y')`} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
 	 *
 	 * This file is free software; you can redistribute it and/or
 	 * modify it under the terms of the GNU Lesser General Public
@@ -156,19 +170,19 @@ snippet lgpl
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 	${5}
-
 snippet inside
 	#if !defined (__${1:MY_PROJECT}_INSIDE__) && !defined ($1_COMPILATION)
 	#error "Only <${2:my-project}/$2.h> can be included directly."
 	#endif
 	${3}
 snippet once
-	static gsize once_init = FALSE;
+	static gsize initialized = FALSE;
 
-	if (g_once_init_enter(&once_init)) {
+	if (g_once_init_enter(&initialized)) {
 		${1}
-		g_once_init_leave(&once_init, TRUE);
+		g_once_init_leave(&initialized, TRUE);
 	}
+	${2}
 snippet window
 	gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	${1}
@@ -304,6 +318,9 @@ snippet getproperty
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		}
 	}
+snippet cprop
+	object_class->set_property = ${1:my_object}_set_property;
+	object_class->get_property = $1_get_property;${2}
 snippet dispose
 	static void
 	${1:example_object}_dispose (GObject *object)
@@ -387,17 +404,39 @@ snippet cobj
 	$2*
 	$3_new (void)
 	{
-		return g_object_new(${5:EXAMPLE}_TYPE_${6:OBJECT}, NULL);
+		$2 *$7;
+
+		$7 = g_object_new(${5:EXAMPLE}_TYPE_${6:OBJECT}, NULL);
+		return $7;
 	}
 
+	/**
+	 * $3_finalize:
+	 * @object: A #$2.
+	 *
+	 * Finalizer for a #$2 instance.  Frees any resources held by
+	 * the instance.
+	 *
+	 * Returns: None.
+	 * Side effects: None.
+	 */
 	static void
-	$3_finalize (GObject *object)
+	$3_finalize (GObject *object) /* IN */
 	{
 		G_OBJECT_CLASS($3_parent_class)->finalize(object);
 	}
 
+	/**
+	 * $3_class_init:
+	 * @klass: A #$2Class.
+	 *
+	 * Initializes the #$2Class and prepares the vtable.
+	 *
+	 * Returns: None.
+	 * Side effects: None.
+	 */
 	static void
-	$3_class_init ($2Class *klass)
+	$3_class_init ($2Class *klass) /* IN */
 	{
 		GObjectClass *object_class;
 
@@ -406,14 +445,23 @@ snippet cobj
 		g_type_class_add_private(object_class, sizeof($2Private));
 	}
 
+	/**
+	 * $3_init:
+	 * @$7: A #$2.
+	 *
+	 * Initializes the newly created #$2 instance.
+	 *
+	 * Returns: None.
+	 * Side effects: None.
+	 */
 	static void
-	$3_init ($2 *${7:object})
+	$3_init ($2 *${7:object}) /* IN */
 	{
 		$7->priv = G_TYPE_INSTANCE_GET_PRIVATE($7,
-		                                       $5_TYPE_$6,
-		                                       $2Private);
+		${8:                                     }$5_TYPE_$6,
+		$8$2Private);
 
-		${8}
+		${9}
 	}
 snippet config
 	#if HAVE_CONFIG_H
@@ -499,3 +547,10 @@ snippet gd
 	gdouble
 snippet bo
 	gboolean
+snippet E
+	ENTRY;
+	${1}
+snippet RE
+	RETURN(${1:ret});${2}
+snippet GSt
+	GStaticRWLock ${1}rw_lock;${2}
