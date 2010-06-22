@@ -10,10 +10,9 @@ snippet signal
 	                 ${4:NULL});${5}
 # A ref-counted struct
 snippet cref
-	#include "${1}.h"
-	#include "trace.h"
+	#include "${1:`HeaderName("$1")`}"
 
-	struct _${2:ExampleStruct}
+	struct _${2:`ClassName("$1")`}
 	{
 		volatile gint ref_count;${5}
 	};
@@ -44,9 +43,9 @@ snippet cref
 	 * Side effects: None.
 	 */
 	$2*
-	${3:example_struct}_new (void)
+	${3:`FuncPrefix("$1")`}_new (void)
 	{
-		$2 *${4:ex_struct};
+		$2 *${4:`InstanceName("$1")`};
 
 		ENTRY;
 		$4 = g_slice_new0($2);
@@ -64,7 +63,7 @@ snippet cref
 	 * Side effects: None.
 	 */
 	$2*
-	$3_ref ($2 *$4)
+	$3_ref ($2 *$4) /* IN */
 	{
 		g_return_val_if_fail($4 != NULL, NULL);
 		g_return_val_if_fail($4->ref_count > 0, NULL);
@@ -87,7 +86,7 @@ snippet cref
 	 *   reaches zero.
 	 */
 	void
-	$3_unref ($2 *$4)
+	$3_unref ($2 *$4) /* IN */
 	{
 		g_return_if_fail($4 != NULL);
 		g_return_if_fail($4->ref_count > 0);
@@ -108,14 +107,14 @@ snippet href
 
 	G_BEGIN_DECLS
 
-	#define ${2:EXAMPLE}_TYPE_${3:STRUCT} (${4:example}_${5:struct}_get_type())
+	#define ${2:`NS_NAME("$1")`}_TYPE_${3:`TYPE_NAME("$1")`} (${4:`FuncPrefix("$1")`}_get_type())
 
-	typedef struct _$1 ${1:ExampleStruct};
+	typedef struct _$1 ${1:`ClassName("$1")`};
 
-	GType $4_$5_get_type (void) G_GNUC_CONST;
-	$1* $4_$5_new      (void);
-	$1* $4_$5_ref      ($1 *$5);
-	void $4_$5_unref    ($1 *$5);
+	GType $4_get_type (void) G_GNUC_CONST;
+	$1* $4_new      (void);
+	$1* $4_ref      ($1 *${5:`InstanceName("$1")`});
+	void $4_unref    ($1 *$5);
 	${6}
 
 	G_END_DECLS
@@ -124,10 +123,10 @@ snippet href
 
 snippet doc
 	/**
-	 * `join(split(Filename("$1"),'-'),'_')`_${1:func_name}:
+	 * `FuncPrefix("$1")`_${1:func_name}:
 	 * @`InstanceName("$1")`: A #`ClassName("$1")`.
 	 *
-	 * ${4:XXX}
+	 * ${4:XXX} `TYPE_NAME("$1")`
 	 *
 	 * Returns: ${2:None.}
 	 * Side effects: ${3:None.}
@@ -171,8 +170,8 @@ snippet lgpl
 	 */
 	${5}
 snippet inside
-	#if !defined (__${1:MY_PROJECT}_INSIDE__) && !defined ($1_COMPILATION)
-	#error "Only <${2:my-project}/$2.h> can be included directly."
+	#if !defined (__${1:`NS_NAME("$1")`}_INSIDE__) && !defined ($1_COMPILATION)
+	#error "Only <${2:`_ns_name("$1")`}/$2.h> can be included directly."
 	#endif
 	${3}
 snippet once
@@ -204,7 +203,7 @@ snippet packstart
 snippet packend
 	gtk_box_pack_end(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);
 	${4}
-snippet addchild
+snippet add
 	gtk_container_add(GTK_CONTAINER(${1:parent}), ${2:child});
 	${3}
 snippet scroller
@@ -294,89 +293,109 @@ snippet glibmain
 
 		return EXIT_SUCCESS;
 	}
-snippet setproperty
+snippet setprop
 	static void
-	${1:example_object}_set_property (GObject      *object,
-	                                  guint         prop_id,
-	                                  const GValue *value,
-	                                  GParamSpec   *pspec)
+	${1:`FuncPrefix("$1")`}_set_property (GObject      *object,  /* IN */
+	${2:  }               guint         prop_id, /* IN */
+	$2               const GValue *value,   /* IN */
+	$2               GParamSpec   *pspec)   /* IN */
 	{
 		switch (prop_id) {
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		}
 	}
-snippet getproperty
+snippet getprop
 	static void
-	${1:example_object}_get_property (GObject    *object,
-	                                  guint       prop_id,
-	                                  GValue     *value,
-	                                  GParamSpec *pspec)
+	${1:`FuncPrefix("$1")`}_get_property (GObject    *object,  /* IN */
+	${2:  }               guint       prop_id, /* IN */
+	$2               GValue     *value,   /* OUT */
+	$2               GParamSpec *pspec)   /* IN */
 	{
 		switch (prop_id) {
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		}
 	}
-snippet cprop
-	object_class->set_property = ${1:my_object}_set_property;
+snippet props
+	object_class->set_property = ${1:`FuncPrefix("$1")`}_set_property;
 	object_class->get_property = $1_get_property;${2}
 snippet dispose
+	/**
+	 * $1_dispose:
+	 * @object: A #GObject.
+	 *
+	 * Dispose callback for @object.  This method releases references held
+	 * by the #GObject instance.
+	 *
+	 * Returns: None.
+	 * Side effects: Plenty.
+	 */
 	static void
-	${1:example_object}_dispose (GObject *object)
+	${1:`FuncPrefix("$1")`}_dispose (GObject *object) /* IN */
 	{
+		ENTRY;${2}
 		G_OBJECT_CLASS($1_parent_class)->dispose(object);
+		EXIT;
 	}
 snippet quark
+	/**
+	 * $1_error_quark:
+	 *
+	 * Retrieves the "$2" error #GQuark.
+	 *
+	 * Returns: A #GQuark.
+	 * Side effects: A #GQuark may be registered on first call.
+	 */
 	GQuark
-	${1:example_object}_error_quark (void)
+	${1:`FuncPrefix("$1")`}_error_quark (void)
 	{
-		return g_quark_from_static_string("${2:example-object}-error-quark");
+		return g_quark_from_static_string("${2:`Filename("$1")`}-error-quark");
 	}
 snippet hquark
 	GQuark ${1:example_object}_error_quark (void) G_GNUC_CONST;
 snippet hobj
-	#ifndef __${1:EXAMPLE}_${2:OBJECT}_H__
+	#ifndef __${1:`NS_NAME("$1")`}_${2:`TYPE_NAME("$1")`}_H__
 	#define __$1_$2_H__
 
 	#include <glib-object.h>
 
 	G_BEGIN_DECLS
 
-	#define $1_TYPE_$2            (${3:example}_${4:object}_get_type())
-	#define $1_$2(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), $1_TYPE_$2, $5))
-	#define $1_$2_CONST(obj)      (G_TYPE_CHECK_INSTANCE_CAST ((obj), $1_TYPE_$2, $5 const))
-	#define $1_$2_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  $1_TYPE_$2, $5Class))
+	#define $1_TYPE_$2            (${3:`FuncPrefix("$1")`}_get_type())
+	#define $1_$2(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), $1_TYPE_$2, $4))
+	#define $1_$2_CONST(obj)      (G_TYPE_CHECK_INSTANCE_CAST ((obj), $1_TYPE_$2, $4 const))
+	#define $1_$2_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  $1_TYPE_$2, $4Class))
 	#define $1_IS_$2(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), $1_TYPE_$2))
 	#define $1_IS_$2_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  $1_TYPE_$2))
-	#define $1_$2_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  $1_TYPE_$2, $5Class))
+	#define $1_$2_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  $1_TYPE_$2, $4Class))
 
-	typedef struct _$5        $5;
-	typedef struct _$5Class   $5Class;
-	typedef struct _$5Private $5Private;
+	typedef struct _$4        $4;
+	typedef struct _$4Class   $4Class;
+	typedef struct _$4Private $4Private;
 
-	struct _${5:ExampleObject}
+	struct _${4:`ClassName("$1")`}
 	{
-		GObject parent;
+		${5:GObject} parent;
 
 		/*< private >*/
-		$5Private *priv;
+		$4Private *priv;
 	};
 
-	struct _$5Class
+	struct _$4Class
 	{
-		GObjectClass parent_class;
+		$5Class parent_class;
 	};
 
-	GType $3_$4_get_type (void) G_GNUC_CONST;
-	$5* $3_$4_new (void);
+	GType $3_get_type (void) G_GNUC_CONST;
+	$4* $3_new (void);
 	${6}
 
 	G_END_DECLS
 
 	#endif /* __$1_$2_H__ */
 snippet cobj
-	#include "${1:example-object}.h"
+	#include "${1:`HeaderName("$1")`}"
 
 	/**
 	 * SECTION:$1
@@ -386,7 +405,7 @@ snippet cobj
 	 * Section overview.
 	 */
 
-	G_DEFINE_TYPE(${2:ExampleObject}, ${3:example_object}, ${4:G_TYPE_OBJECT})
+	G_DEFINE_TYPE(${2:`ClassName("$1")`}, ${3:`FuncPrefix("$1")`}, ${4:G_TYPE_OBJECT})
 
 	struct _$2Private
 	{
@@ -406,7 +425,7 @@ snippet cobj
 	{
 		$2 *$7;
 
-		$7 = g_object_new(${5:EXAMPLE}_TYPE_${6:OBJECT}, NULL);
+		$7 = g_object_new(${5:`NS_NAME("$1")`}_TYPE_${6:`TYPE_NAME("$1")`}, NULL);
 		return $7;
 	}
 
@@ -455,7 +474,7 @@ snippet cobj
 	 * Side effects: None.
 	 */
 	static void
-	$3_init ($2 *${7:object}) /* IN */
+	$3_init ($2 *${7:`InstanceName("$1")`}) /* IN */
 	{
 		$7->priv = G_TYPE_INSTANCE_GET_PRIVATE($7,
 		${8:                                     }$5_TYPE_$6,
@@ -468,17 +487,17 @@ snippet config
 	#include "config.h"
 	#endif
 snippet iface
-	#include "${1:example-iface}.h"
+	#include "${1:`HeaderName("$1")`}"
 
 	GType
-	${2:example_iface}_get_type (void)
+	${2:`FuncPrefix("$1")`}_get_type (void)
 	{
 		static GType type_id = 0;
 
 		if (g_once_init_enter((gsize *)&type_id)) {
 			GType _type_id;
 			const GTypeInfo g_type_info = {
-				sizeof(${3:Example}Iface),
+				sizeof(${3:`ClassName("$1")`}Iface),
 				NULL, /* base_init */
 				NULL, /* base_finalize */
 				NULL, /* class_init */
@@ -508,54 +527,75 @@ snippet hiface
 
 	G_BEGIN_DECLS
 
-	#define ${1:EXAMPLE}_TYPE_${2:IFACE}             (${3:example}_${4:iface}_get_type())
-	#define $1_$2(o)               (G_TYPE_CHECK_INSTANCE_CAST((o),    $1_TYPE_$2, $5))
+	#define ${1:`NS_NAME("$1")`}_TYPE_${2:`TYPE_NAME("$1")`}             (${3:`FuncPrefix("$1")`}_get_type())
+	#define $1_$2(o)               (G_TYPE_CHECK_INSTANCE_CAST((o),    $1_TYPE_$2, $4))
 	#define $1_IS_$2(o)            (G_TYPE_CHECK_INSTANCE_TYPE((o),    $1_TYPE_$2))
-	#define $1_$2_GET_INTERFACE(o) (G_TYPE_INSTANCE_GET_INTERFACE((o), $1_TYPE_$2, $5Iface))
+	#define $1_$2_GET_INTERFACE(o) (G_TYPE_INSTANCE_GET_INTERFACE((o), $1_TYPE_$2, $4Iface))
 
-	typedef struct _$5 ${5:ExampleIface};
-	typedef struct _$5Iface $5Iface;
+	typedef struct _$4 ${4:`ClassName("$1")`};
+	typedef struct _$4Iface $4Iface;
 
-	struct _$5Iface
+	struct _$4Iface
 	{
 		GTypeInterface parent;
 
-		${6:/* interface methods */}
+		${5:/* interface methods */}
 	};
 
 	GType $3_$4_get_type (void) G_GNUC_CONST;
-	${7}
+	${6}
 
 	G_END_DECLS
 
 	#endif /* __$1_$2_H__ */
+snippet forlist
+	for (${1:iter} = ${2:list}; $1; $1 = $1->next) {
+		${3}
+	}
 snippet prepend
 	$1 = g_list_prepend(${1:list}, ${2:data});${3}
 snippet append
 	$1 = g_list_append(${1:list}, ${2:data});${3}
 snippet method
-	void
-	${1:example}_${2:object}_${3:do_something} (${4:void})
+	${1:static void}
+	${2:`FuncPrefix("$1")`}_${3:func_name} (${4:`ClassName("$1")`} *${5:`InstanceName("$1")`}${6:)} /* IN */${7}
 	{
-		${5}
+		$4Private *priv;
+
+		g_return_if_fail(`NS_NAME("$1")`_IS_`TYPE_NAME("$1")`($5));
+
+		ENTRY;
+		priv = $5->priv;${8}
+		EXIT;
 	}
 snippet fail
-	g_return_if_fail(${1:ptr}${2: != NULL});${3}
+	g_return_if_fail(${1:`NS_NAME("$1")`_IS_`TYPE_NAME("$1")`(`InstanceName("$1")`)});${2}
 snippet vfail
-	g_return_val_if_fail(${1:ptr}${2: != NULL}, ${3:NULL});${4}
+	g_return_val_if_fail(${1:`NS_NAME("$1")`_IS_`TYPE_NAME("$1")`(`InstanceName("$1")`)}, ${2:NULL});${3}
 snippet gd
-	gdouble
+	gdouble 
 snippet bo
-	gboolean
+	gboolean 
+snippet gb
+	gboolean 
 snippet E
-	ENTRY;
-	${1}
+	ENTRY;${1}
+snippet EX
+	EXIT;${1}
 snippet RE
 	RETURN(${1:ret});${2}
 snippet GSt
 	GStaticRWLock ${1}rw_lock;${2}
+snippet rlock
+	g_static_rw_lock_reader_lock(&${1:priv}->rw_lock);${2}
+snippet runlock
+	g_static_rw_lock_reader_unlock(&${1:priv}->rw_lock);${2}
+snippet wlock
+	g_static_rw_lock_writer_lock(&${1:priv}->rw_lock);${2}
+snippet wunlock
+	g_static_rw_lock_writer_unlock(&${1:priv}->rw_lock);${2}
 snippet guard
-	#ifndef __${1:MY_STRUCT}_H__
+	#ifndef __${1:`CLASS_NAME("$1")`}_H__
 	#define __$1_H__
 
 	#include <glib.h>
