@@ -124,14 +124,14 @@ snippet href
 
 snippet doc
 	/**
-	 * ${1}:
-	 * @${2}: A #${3}.${7}
+	 * `join(split(Filename("$1"),'-'),'_')`_${1:func_name}:
+	 * @`InstanceName("$1")`: A #`ClassName("$1")`.
 	 *
-	 * ${4:This method ...}
+	 * ${4:XXX}
 	 *
-	 * Returns: ${5:None.}
-	 * Side effects: ${6:None.}
-	 */
+	 * Returns: ${2:None.}
+	 * Side effects: ${3:None.}
+	 */${5}
 snippet gpl
 	/* ${1:`expand('%')`}
 	 *

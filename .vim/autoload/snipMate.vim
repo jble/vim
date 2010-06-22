@@ -4,6 +4,23 @@ fun! Filename(...)
 	return !a:0 || a:1 == '' ? filename : substitute(a:1, '$1', filename, 'g')
 endf
 
+fun! ClassName(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return "ExampleClass" | endif
+	let words = split(filename, '-')
+	for i in range(0,len(words)-1)
+		let words[i] = substitute(words[i], '^.', '\u&', '')
+	endfor
+	return join(words, '')
+endf
+
+fun! InstanceName(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return "ExampleClass" | endif
+	let words = split(filename, '-')
+	return words[len(words)-1]
+endf
+
 fun s:RemoveSnippet()
 	unl! g:snipPos s:curPos s:snipLen s:endCol s:endLine s:prevLen
 	     \ s:lastBuf s:oldWord
