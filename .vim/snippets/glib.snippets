@@ -557,6 +557,15 @@ snippet prepend
 snippet append
 	$1 = g_list_append(${1:list}, ${2:data});${3}
 snippet method
+	/**
+	 * $2_$3:
+	 * @$5: A $4.
+	 *
+	 * XXX
+	 *
+	 * Returns: None.
+	 * Side effects: None.
+	 */
 	${1:static void}
 	${2:`FuncPrefix("$1")`}_${3:func_name} (${4:`ClassName("$1")`} *${5:`InstanceName("$1")`}${6:)} /* IN */${7}
 	{
@@ -607,3 +616,11 @@ snippet guard
 	G_END_DECLS
 
 	#endif /* __$1_H__ */
+snippet C
+	`ClassName("$1")` 
+snippet c
+	*`InstanceName("$1")`
+snippet I
+	/* IN */
+snippet O
+	/* OUT */
