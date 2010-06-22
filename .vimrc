@@ -84,6 +84,7 @@ colorscheme jungle
 
 " Map make and clean
 map <F7> <Esc>:!clear && make<CR>
+map <F3> <Esc>:!clear && make run<CR>
 map <C-F7> <Esc>:!clear && make clean && make<CR>
 
 " Highlight occurance of current word
