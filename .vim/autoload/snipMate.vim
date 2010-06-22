@@ -16,9 +16,60 @@ endf
 
 fun! InstanceName(...)
 	let filename = expand('%:t:r')
-	if filename == '' | return "ExampleClass" | endif
+	if filename == '' | return "ExampleObject" | endif
 	let words = split(filename, '-')
 	return words[len(words)-1]
+endf
+
+fun! FuncPrefix(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return "example_object" | endif
+	let words = split(filename, '-')
+	for i in range(0,len(words)-1)
+		let words[i] = tolower(words[i])
+	endfor
+	return join(words, '_')
+endf
+
+fun! CLASS_NAME(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return "EXAMPLE_OBJECT" | endif
+	let words = split(filename, '-')
+	for i in range(0,len(words)-1)
+		let words[i] = toupper(words[i])
+	endfor
+	return join(words, '_')
+endf
+
+fun! TYPE_NAME(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return "OBJECT" | endif
+	let words = split(filename, '-')
+	call remove(words, 0)
+	for i in range(0, len(words) - 1)
+		let words[i] = toupper(words[i])
+	endfor
+	return join(words, '_')
+endf
+
+fun! NS_NAME(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return "EXAMPLE" | endif
+	let words = split(filename, '-')
+	return toupper(words[0])
+endf
+
+fun! _ns_name(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return "EXAMPLE" | endif
+	let words = split(filename, '-')
+	return tolower(words[0])
+endf
+
+fun! HeaderName(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return "example-object.h" | endif
+	return filename.".h"
 endf
 
 fun s:RemoveSnippet()
