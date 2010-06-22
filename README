@@ -1,0 +1,14 @@
+Hi There,
+
+This is the vim setup I use on my machines.  I generally set it up by:
+
+1)  Install real vim (apt-get install vim-addon-manager) should get it all.
+2)  git clone this repo to ~/Projects or whatever.
+3)  ln -s $prefix/vim/.vim ~/
+4)  ln -s $prefix/vim/.vimrc ~/
+
+This has a few tasty plugins with modifications for how I work.  NO
+guarantees this will make you faster, but it makes me considerably
+faster at slinging C.
+
+Check out the glib snippets.  They are where the magic happens.
