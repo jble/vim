@@ -4,6 +4,7 @@ set ci
 set ts=4
 set sw=4
 set noet
+set nowrap
 
 " Include Syntax Files
 source $HOME/.vim/syntax/gtk.vim
