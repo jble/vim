@@ -628,3 +628,15 @@ snippet O
 	/* OUT */
 snippet OUT
 	/* OUT */
+snippet Pr
+	`ClassName("$1")`Private *priv;
+snippet pr
+	`ClassName("$1")`Private *priv;
+snippet strd
+	g_strdup(${1});${2}
+snippet str
+	g_strdup(${1});${2}
+snippet prop
+	g_object_class_install_property(object_class,
+	                                PROP_${1:NAME},
+	                                ${2}
