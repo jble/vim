@@ -183,37 +183,28 @@ snippet once
 	}
 	${2}
 snippet window
-	gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	${1}
+	gtk_window_new(GTK_WINDOW_TOPLEVEL);${1}
 snippet button
-	gtk_button_new();
-	${1}
+	gtk_button_new();${1}
 snippet label
-	gtk_label_new("${1:label}");
-	${2}
+	gtk_label_new("${1:label}");${2}
 snippet hbox
-	gtk_hbox_new(FALSE, 0);
-	${1}
+	gtk_hbox_new(FALSE, 0);${1}
 snippet vbox
-	gtk_vbox_new(FALSE, 0);
-	${1}
+	gtk_vbox_new(FALSE, 0);${1}
 snippet packstart
-	gtk_box_pack_start(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);
-	${4}
+	gtk_box_pack_start(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);${4}
 snippet packend
-	gtk_box_pack_end(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);
-	${4}
+	gtk_box_pack_end(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);${4}
 snippet add
-	gtk_container_add(GTK_CONTAINER(${1:parent}), ${2:child});
-	${3}
+	gtk_container_add(GTK_CONTAINER(${1:parent}), ${2:child});${3}
 snippet scroller
 	gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(${1:scroller}),
 	                               GTK_POLICY_AUTOMATIC,
 	                               GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW($1),
-	                                    GTK_SHADOW_NONE);
-	${2}
+	                                    GTK_SHADOW_NONE);${2}
 snippet gtkmain
 	#include <stdlib.h>
 	#include <glib.h>
@@ -644,3 +635,7 @@ snippet f
 	`FuncPrefix("$1")`_
 snippet i
 	gint 
+snippet w
+	GtkWidget *
+snippet gp
+	gpointer 
