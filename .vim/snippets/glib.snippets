@@ -639,3 +639,13 @@ snippet w
 	GtkWidget *
 snippet gp
 	gpointer 
+snippet GE
+	GError *error = NULL;
+snippet unref
+	g_object_unref(${1:`InstanceName("$1")`});${2}
+snippet ref
+	g_object_ref(${1:`InstanceName("$1")`});${2}
+snippet co
+	/*
+	 * ${1:XXX}
+	 */${2}
