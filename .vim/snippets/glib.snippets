@@ -1,8 +1,7 @@
-# Show a widget
 snippet show
-	gtk_widget_show(${1});
-	${2}
-# Attach a signal
+	gtk_widget_show(${1});${2}
+snippet hide
+	gtk_widget_hide(${1});${2}
 snippet signal
 	g_signal_connect(${1},
 	                 "${2}",
@@ -124,13 +123,15 @@ snippet href
 snippet doc
 	/**
 	 * `FuncPrefix("$1")`_${1:func_name}:
-	 * @`InstanceName("$1")`: A #`ClassName("$1")`.
+	 * @`InstanceName("$1")`: (in): A #`ClassName("$1")`.
 	 *
 	 * ${4:XXX}
 	 *
 	 * Returns: ${2:None.}
 	 * Side effects: ${3:None.}
 	 */${5}
+snippet d
+	* @${1:xxx}: (${2:in}): A #${3}
 snippet gpl
 	/* ${1:`expand('%')`}
 	 *
@@ -285,11 +286,20 @@ snippet glibmain
 		return EXIT_SUCCESS;
 	}
 snippet setprop
+	/**
+	 * $1_set_property:
+	 * @object: (in): A #GObject.
+	 * @prop_id: (in): The property identifier.
+	 * @value: (in): The given property.
+	 * @pspec: (in): A #ParamSpec.
+	 *
+	 * Set a given #GObject property.
+	 */
 	static void
-	${1:`FuncPrefix("$1")`}_set_property (GObject      *object,  /* IN */
-	${2:  }               guint         prop_id, /* IN */
-	$2               const GValue *value,   /* IN */
-	$2               GParamSpec   *pspec)   /* IN */
+	${1:`FuncPrefix("$1")`}_set_property (GObject      *object,
+	${2:  }               guint         prop_id,
+	$2               const GValue *value,
+	$2               GParamSpec   *pspec)
 	{
 		switch (prop_id) {
 		default:
@@ -297,6 +307,15 @@ snippet setprop
 		}
 	}
 snippet getprop
+	/**
+	 * $1_set_property:
+	 * @object: (in): A #GObject.
+	 * @prop_id: (in): The property identifier.
+	 * @value: (out): The given property.
+	 * @pspec: (in): A #ParamSpec.
+	 *
+	 * Get a given #GObject property.
+	 */
 	static void
 	${1:`FuncPrefix("$1")`}_get_property (GObject    *object,  /* IN */
 	${2:  }               guint       prop_id, /* IN */
@@ -314,7 +333,7 @@ snippet props
 snippet dispose
 	/**
 	 * $1_dispose:
-	 * @object: A #GObject.
+	 * @object: (in): A #GObject.
 	 *
 	 * Dispose callback for @object.  This method releases references held
 	 * by the #GObject instance.
@@ -323,7 +342,7 @@ snippet dispose
 	 * Side effects: Plenty.
 	 */
 	static void
-	${1:`FuncPrefix("$1")`}_dispose (GObject *object) /* IN */
+	${1:`FuncPrefix("$1")`}_dispose (GObject *object)
 	{
 		ENTRY;${2}
 		G_OBJECT_CLASS($1_parent_class)->dispose(object);
@@ -422,7 +441,7 @@ snippet cobj
 
 	/**
 	 * $3_finalize:
-	 * @object: A #$2.
+	 * @object: (in): A #$2.
 	 *
 	 * Finalizer for a #$2 instance.  Frees any resources held by
 	 * the instance.
@@ -431,14 +450,14 @@ snippet cobj
 	 * Side effects: None.
 	 */
 	static void
-	$3_finalize (GObject *object) /* IN */
+	$3_finalize (GObject *object)
 	{
 		G_OBJECT_CLASS($3_parent_class)->finalize(object);
 	}
 
 	/**
 	 * $3_class_init:
-	 * @klass: A #$2Class.
+	 * @klass: (in): A #$2Class.
 	 *
 	 * Initializes the #$2Class and prepares the vtable.
 	 *
@@ -446,7 +465,7 @@ snippet cobj
 	 * Side effects: None.
 	 */
 	static void
-	$3_class_init ($2Class *klass) /* IN */
+	$3_class_init ($2Class *klass)
 	{
 		GObjectClass *object_class;
 
@@ -457,7 +476,7 @@ snippet cobj
 
 	/**
 	 * $3_init:
-	 * @$7: A #$2.
+	 * @$7: (in): A #$2.
 	 *
 	 * Initializes the newly created #$2 instance.
 	 *
@@ -465,7 +484,7 @@ snippet cobj
 	 * Side effects: None.
 	 */
 	static void
-	$3_init ($2 *${7:`InstanceName("$1")`}) /* IN */
+	$3_init ($2 *${7:`InstanceName("$1")`})
 	{
 		$7->priv = G_TYPE_INSTANCE_GET_PRIVATE($7,
 		${8:                                     }$5_TYPE_$6,
@@ -550,7 +569,7 @@ snippet append
 snippet method
 	/**
 	 * $2_$3:
-	 * @$5: A #$4.
+	 * @$5: (in): A #$4.
 	 *
 	 * XXX
 	 *
@@ -558,15 +577,13 @@ snippet method
 	 * Side effects: None.
 	 */
 	${1:static void}
-	${2:`FuncPrefix("$1")`}_${3:func_name} (${4:`ClassName("$1")`} *${5:`InstanceName("$1")`}${6:)} /* IN */${7}
+	${2:`FuncPrefix("$1")`}_${3:func_name} (${4:`ClassName("$1")`} *${5:`InstanceName("$1")`}${6:)} ${7}
 	{
 		$4Private *priv;
 
 		g_return_if_fail(`NS_NAME("$1")`_IS_`TYPE_NAME("$1")`($5));
 
-		ENTRY;
 		priv = $5->priv;${8}
-		EXIT;
 	}
 snippet fail
 	g_return_if_fail(${1:`NS_NAME("$1")`_IS_`TYPE_NAME("$1")`(`InstanceName("$1")`)});${2}
