@@ -672,3 +672,14 @@ snippet co
 	 */${2}
 snippet CC
 	`CLASS_NAME("$1")`(
+snippet h
+	`ClassName("$1")`Private *priv;
+
+	g_return_if_fail(`NS_NAME("$1")`_IS_`TYPE_NAME("$1")`(`InstanceName("$1")`));
+
+	priv = `InstanceName("$1")`->priv;
+
+snippet iter
+	for (iter = list; iter; iter = iter->next) {
+		$1
+	}
