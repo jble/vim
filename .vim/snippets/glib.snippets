@@ -647,7 +647,11 @@ snippet str
 snippet prop
 	g_object_class_install_property(object_class,
 	                                PROP_${1:NAME},
-	                                ${2}
+	                                g_param_spec_${2:object}("${3:name}",
+	                                                    "$3",
+	                                                    "$3",
+	                                                    ${4}
+	                                                    ${5:G_PARAM_READWRITE}));
 snippet f
 	`FuncPrefix("$1")`_
 snippet i
