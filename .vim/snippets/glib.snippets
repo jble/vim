@@ -99,8 +99,8 @@ snippet cref
 	}
 # A ref-counted struct (header)
 snippet href
-	#ifndef __$2_$3_H__
-	#define __$2_$3_H__
+	#ifndef $2_$3_H
+	#define $2_$3_H
 
 	#include <glib-object.h>
 
@@ -118,7 +118,7 @@ snippet href
 
 	G_END_DECLS
 
-	#endif /* __$2_$3_H__ */
+	#endif /* $2_$3_H */
 
 snippet doc
 	/**
@@ -171,7 +171,7 @@ snippet lgpl
 	 */
 	${5}
 snippet inside
-	#if !defined (__${1:`NS_NAME("$1")`}_INSIDE__) && !defined ($1_COMPILATION)
+	#if !defined (${1:`NS_NAME("$1")`}_INSIDE) && !defined ($1_COMPILATION)
 	#error "Only <${2:`_ns_name("$1")`}/$2.h> can be included directly."
 	#endif
 	${3}
@@ -365,8 +365,8 @@ snippet quark
 snippet hquark
 	GQuark ${1:example_object}_error_quark (void) G_GNUC_CONST;
 snippet hobj
-	#ifndef __${1:`NS_NAME("$1")`}_${2:`TYPE_NAME("$1")`}_H__
-	#define __$1_$2_H__
+	#ifndef ${1:`NS_NAME("$1")`}_${2:`TYPE_NAME("$1")`}_H
+	#define $1_$2_H
 
 	#include <glib-object.h>
 
@@ -403,7 +403,7 @@ snippet hobj
 
 	G_END_DECLS
 
-	#endif /* __$1_$2_H__ */
+	#endif /* $1_$2_H */
 snippet cobj
 	#include "${1:`HeaderName("$1")`}"
 
@@ -530,8 +530,8 @@ snippet iface
 		return type_id;
 	}
 snippet hiface
-	#ifndef __$1_$2_H__
-	#define __$1_$2_H__
+	#ifndef $1_$2_H
+	#define $1_$2_H
 
 	#include <glib-object.h>
 
@@ -557,7 +557,7 @@ snippet hiface
 
 	G_END_DECLS
 
-	#endif /* __$1_$2_H__ */
+	#endif /* $1_$2_H */
 snippet forlist
 	for (${1:iter} = ${2:list}; $1; $1 = $1->next) {
 		${3}
@@ -612,8 +612,8 @@ snippet wlock
 snippet wunlock
 	g_static_rw_lock_writer_unlock(&${1:priv}->rw_lock);${2}
 snippet guard
-	#ifndef __${1:`CLASS_NAME("$1")`}_H__
-	#define __$1_H__
+	#ifndef ${1:`CLASS_NAME("$1")`}_H
+	#define $1_H
 
 	#include <glib.h>
 
@@ -623,7 +623,7 @@ snippet guard
 
 	G_END_DECLS
 
-	#endif /* __$1_H__ */
+	#endif /* $1_H */
 snippet C
 	`ClassName("$1")` 
 snippet c
