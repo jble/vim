@@ -317,10 +317,10 @@ snippet getprop
 	 * Get a given #GObject property.
 	 */
 	static void
-	${1:`FuncPrefix("$1")`}_get_property (GObject    *object,  /* IN */
-	${2:  }               guint       prop_id, /* IN */
-	$2               GValue     *value,   /* OUT */
-	$2               GParamSpec *pspec)   /* IN */
+	${1:`FuncPrefix("$1")`}_get_property (GObject    *object,
+	${2:  }               guint       prop_id,
+	$2               GValue     *value,
+	$2               GParamSpec *pspec)
 	{
 		switch (prop_id) {
 		default:
