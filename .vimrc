@@ -59,7 +59,7 @@ autocmd BufRead *.vala set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
 autocmd BufRead *.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
 au BufRead,BufNewFile *.vala            setfiletype vala
 au BufRead,BufNewFile *.vapi            setfiletype vala
-au! Syntax vala source $VIM/vim72/syntax/cs.vim
+au! Syntax vala source $VIM/vim73/syntax/cs.vim
 
 " My RPC format
 au BufRead,BufNewFile *.rpc setfiletype rpc
