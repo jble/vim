@@ -404,6 +404,141 @@ snippet hobj
 	G_END_DECLS
 
 	#endif /* $1_$2_H */
+snippet vhobj
+	#ifndef ${1:`NS_NAME("$1")`}_${2:`TYPE_NAME("$1")`}_H
+	#define $1_$2_H
+
+
+	#include <glib-object.h>
+
+
+	G_BEGIN_DECLS
+
+
+	#define $1_TYPE_$2            (${3:`FuncPrefix("$1")`}_get_type())
+	#define $1_$2(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), $1_TYPE_$2, $4))
+	#define $1_$2_CONST(obj)      (G_TYPE_CHECK_INSTANCE_CAST ((obj), $1_TYPE_$2, $4 const))
+	#define $1_$2_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  $1_TYPE_$2, $4Class))
+	#define $1_IS_$2(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), $1_TYPE_$2))
+	#define $1_IS_$2_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  $1_TYPE_$2))
+	#define $1_$2_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  $1_TYPE_$2, $4Class))
+
+
+	typedef struct _$4        $4;
+	typedef struct _$4Class   $4Class;
+	typedef struct _$4Private $4Private;
+
+
+	struct _${4:`ClassName("$1")`}
+	{
+		${5:GObject} parent;
+
+		/*< private >*/
+		$4Private *priv;
+	};
+
+
+	struct _$4Class
+	{
+		$5Class parent_class;
+	};
+
+
+	GType $3_get_type (void) G_GNUC_CONST;
+	${6}
+
+	G_END_DECLS
+
+
+	#endif /* $1_$2_H */
+snippet vcobj
+	#include "${1:`HeaderName("$1")`}"
+
+
+	G_DEFINE_TYPE(${2:`ClassName("$1")`}, ${3:`FuncPrefix("$1")`}, ${4:G_TYPE_OBJECT})
+
+
+	struct _$2Private
+	{
+		gpointer dummy;
+	};
+
+
+	/*
+	 *--------------------------------------------------------------------------
+	 *
+	 * $3_finalize --
+	 *
+	 *       Finalizer for #$2 instance.  Frees any resources held by
+	 *       the instance.
+	 *
+	 * Returns:
+	 *       None.
+	 *
+	 * Side effects:
+	 *       None.
+	 *
+	 *--------------------------------------------------------------------------
+	 */
+
+	static void
+	$3_finalize (GObject *object) /* IN */
+	{
+		G_OBJECT_CLASS($3_parent_class)->finalize(object);
+	}
+
+
+	/*
+	 *--------------------------------------------------------------------------
+	 *
+	 * $3_class_init --
+	 *
+	 *       Initializes the #$2Class and prepares the vtable.
+	 *
+	 * Returns:
+	 *       None.
+	 *
+	 * Side effects:
+	 *       None.
+	 *
+	 *--------------------------------------------------------------------------
+	 */
+
+	static void
+	$3_class_init ($2Class *klass) /* IN */
+	{
+		GObjectClass *object_class;
+
+		object_class = G_OBJECT_CLASS(klass);
+		object_class->finalize = $3_finalize;
+		g_type_class_add_private(object_class, sizeof($2Private));
+	}
+
+
+	/*
+	 *--------------------------------------------------------------------------
+	 *
+	 * $3_init --
+	 *
+	 *       Initializes the #$2 instance.
+	 *
+	 * Returns:
+	 *       None.
+	 *
+	 * Side effects:
+	 *       None.
+	 *
+	 *--------------------------------------------------------------------------
+	 */
+
+	static void
+	$3_init ($2 *${7:`InstanceName("$1")`}) /* IN */
+	{
+		$7->priv =
+			G_TYPE_INSTANCE_GET_PRIVATE($7,
+			                            ${5:`NS_NAME("$1")`}_TYPE_${6:`TYPE_NAME("$1")`},
+			                            $2Private);
+	}
 snippet cobj
 	#include "${1:`HeaderName("$1")`}"
 
