@@ -482,7 +482,7 @@ snippet vcobj
 	 */
 
 	static void
-	$3_finalize (GObject *object) /* IN */
+	$3_finalize(GObject *object) /* IN */
 	{
 		G_OBJECT_CLASS($3_parent_class)->finalize(object);
 	}
@@ -505,7 +505,7 @@ snippet vcobj
 	 */
 
 	static void
-	$3_class_init ($2Class *klass) /* IN */
+	$3_class_init($2Class *klass) /* IN */
 	{
 		GObjectClass *object_class;
 
@@ -532,7 +532,7 @@ snippet vcobj
 	 */
 
 	static void
-	$3_init ($2 *${7:`InstanceName("$1")`}) /* IN */
+	$3_init($2 *${7:`InstanceName("$1")`}) /* IN */
 	{
 		$7->priv =
 			G_TYPE_INSTANCE_GET_PRIVATE($7,
