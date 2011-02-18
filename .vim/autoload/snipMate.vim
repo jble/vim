@@ -1,3 +1,21 @@
+fun! SplitFilename(...)
+	let filename = expand('%:t:r')
+	if filename == '' | return ['example', 'object'] | endif
+	let words = []
+	let word = ''
+	for i in range(0,len(filename)-1)
+		if toupper(filename[i]) == filename[i] || filename[i] == '-'
+			let words += [word]
+			let word = ''
+		endif
+		if filename[i] != '-'
+			let word = word . tolower(filename[i])
+		endif
+	endfor
+	let words += [word]
+	return words
+endf
+
 fun! Filename(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return a:0 == 2 ? a:2 : '' | endif
@@ -7,7 +25,7 @@ endf
 fun! ClassName(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return "ExampleClass" | endif
-	let words = split(filename, '-')
+	let words = SplitFilename()
 	for i in range(0,len(words)-1)
 		let words[i] = substitute(words[i], '^.', '\u&', '')
 	endfor
@@ -17,14 +35,14 @@ endf
 fun! InstanceName(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return "ExampleObject" | endif
-	let words = split(filename, '-')
+	let words = SplitFilename()
 	return words[len(words)-1]
 endf
 
 fun! FuncPrefix(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return "example_object" | endif
-	let words = split(filename, '-')
+	let words = SplitFilename()
 	for i in range(0,len(words)-1)
 		let words[i] = tolower(words[i])
 	endfor
@@ -34,7 +52,7 @@ endf
 fun! CLASS_NAME(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return "EXAMPLE_OBJECT" | endif
-	let words = split(filename, '-')
+	let words = SplitFilename()
 	for i in range(0,len(words)-1)
 		let words[i] = toupper(words[i])
 	endfor
@@ -44,7 +62,7 @@ endf
 fun! TYPE_NAME(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return "OBJECT" | endif
-	let words = split(filename, '-')
+	let words = SplitFilename()
 	call remove(words, 0)
 	for i in range(0, len(words) - 1)
 		let words[i] = toupper(words[i])
@@ -55,14 +73,14 @@ endf
 fun! NS_NAME(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return "EXAMPLE" | endif
-	let words = split(filename, '-')
+	let words = SplitFilename()
 	return toupper(words[0])
 endf
 
 fun! _ns_name(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return "EXAMPLE" | endif
-	let words = split(filename, '-')
+	let words = SplitFilename()
 	return tolower(words[0])
 endf
 
