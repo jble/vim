@@ -1,3 +1,21 @@
+fun! Capitalize(normal)
+	if a:normal == '' | return '' | endif
+	let word = toupper(a:normal[0])
+	for i in range(1,len(a:normal)-1)
+		let word = word . tolower(a:normal[i])
+	endfor
+	return word
+endf
+
+fun! FuncSpace(name)
+	let func = FuncPrefix() . '_' . a:name
+	let word = ''
+	for i in range(0,len(func)-1)
+		let word = word . ' '
+	endfor
+	return word
+endf
+
 fun! SplitFilename(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return ['example', 'object'] | endif
