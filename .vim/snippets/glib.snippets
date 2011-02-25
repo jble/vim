@@ -546,12 +546,20 @@ snippet cobj
 
 	#include "${1:`HeaderName("$1")`}"
 
-	G_DEFINE_TYPE(${2:`ClassName("$1")`}, ${3:`FuncPrefix("$1")`}, ${4:G_TYPE_OBJECT})
+	G_DEFINE_TYPE(${2:`ClassName()`}, ${3:`FuncPrefix()`}, ${4:G_TYPE_OBJECT})
 
 	struct _$2Private
 	{
 		gpointer dummy;
 	};
+
+	enum
+	{
+		PROP_0,
+		LAST_PROP
+	};
+
+	static GParamSpec *gParamSpecs[LAST_PROP];
 
 	/**
 	 * $3_finalize:
@@ -598,12 +606,12 @@ snippet cobj
 	 * Side effects: None.
 	 */
 	static void
-	$3_init ($2 *${7:`InstanceName("$1")`})
+	$3_init ($2 *${5:`InstanceName("$1")`})
 	{
-		$7->priv =
-			G_TYPE_INSTANCE_GET_PRIVATE($7,
-			                            $5_TYPE_$6,
-			                            $8$2Private);
+		$5->priv =
+			G_TYPE_INSTANCE_GET_PRIVATE($5,
+			                            `NS_NAME()`_TYPE_`TYPE_NAME()`,
+			                            `ClassName()`Private);
 	}
 snippet config
 	#ifdef HAVE_CONFIG_H
