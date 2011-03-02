@@ -5,8 +5,7 @@ snippet hide
 snippet W
 	GtkWidget *
 snippet signal
-	g_signal_connect(${1},
-	                 "${2}",
+	g_signal_connect(${1}, "${2}",
 	                 G_CALLBACK(${3}),
 	                 ${4:NULL});${5}
 # A ref-counted struct
