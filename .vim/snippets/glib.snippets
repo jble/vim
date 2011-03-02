@@ -8,6 +8,11 @@ snippet signal
 	g_signal_connect(${1}, "${2}",
 	                 G_CALLBACK(${3}),
 	                 ${4:NULL});${5}
+snippet signals
+	g_signal_connect_swapped(${1},
+	                         "${2}",
+	                         G_CALLBACK(${3}),
+	                         ${4:NULL});${5}
 # A ref-counted struct
 snippet cref
 	#include "${1:`HeaderName("$1")`}"
