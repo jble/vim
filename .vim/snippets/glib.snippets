@@ -184,28 +184,41 @@ snippet once
 	}
 	${2}
 snippet window
-	gtk_window_new(GTK_WINDOW_TOPLEVEL);${1}
+	g_object_new(GTK_TYPE_WINDOW,
+	             "default-height", ${1:480},
+	             "default-width", ${2:640},
+	             "title", _("${3:Window Title}"),
+	             NULL);${4}
 snippet button
-	gtk_button_new();${1}
+	g_object_new(GTK_TYPE_BUTTON,
+	             "visible", TRUE,
+	             "stock-id", ${1:GTK_STOCK_ADD},
+	             NULL);${2}
 snippet label
-	gtk_label_new("${1:label}");${2}
+	g_object_new(GTK_TYPE_LABEL,
+	             "label", _("${1:XXX}"),
+	             "use-markup", ${2:TRUE},
+	             "visible", TRUE,
+	             "xalign", ${3:0.5f},
+	             NULL);${4}
 snippet hbox
-	gtk_hbox_new(FALSE, 0);${1}
+	g_object_new(GTK_TYPE_HBOX,
+	             "visible", TRUE,
+	             NULL);${1}
 snippet vbox
-	gtk_vbox_new(FALSE, 0);${1}
-snippet packstart
-	gtk_box_pack_start(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);${4}
-snippet packend
-	gtk_box_pack_end(GTK_BOX(${1:box}), ${2:child}, ${3:FALSE}, TRUE, 0);${4}
+	g_object_new(GTK_TYPE_VBOX,
+	             "visible", TRUE,
+	             NULL);${1}
 snippet add
 	gtk_container_add(GTK_CONTAINER(${1:parent}), ${2:child});${3}
+snippet addp
+	gtk_container_add_with_properties(GTK_CONTAINER(${1:parent}), ${2:child},
+	                                  "${3:expand}", ${4:FALSE},
+	                                  NULL);${5}
 snippet scroller
-	gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(${1:scroller}),
-	                               GTK_POLICY_AUTOMATIC,
-	                               GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW($1),
-	                                    GTK_SHADOW_NONE);${2}
+	g_object_new(GTK_TYPE_SCROLLED_WINDOW,
+	             "visible", TRUE,
+	             NULL);
 snippet gtkmain
 	#include <stdlib.h>
 	#include <glib.h>
@@ -673,7 +686,7 @@ snippet hiface
 		${5:/* interface methods */}
 	};
 
-	GType $3_$4_get_type (void) G_GNUC_CONST;
+	GType $3_get_type (void) G_GNUC_CONST;
 	${6}
 
 	G_END_DECLS
