@@ -133,7 +133,7 @@ snippet doc
 snippet d
 	* @${1:xxx}: (${2:in}): A #${3}
 snippet gpl
-	/* ${1:`expand('%')`}
+	/* ${1:`expand('%:t')`}
 	 *
 	 * Copyright (C) ${2:`system('date +%Y')`} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
 	 * 
@@ -152,7 +152,7 @@ snippet gpl
 	 */
 	${5}
 snippet lgpl
-	/* ${1:`expand('%')`}
+	/* ${1:`expand('%:t')`}
 	 *
 	 * Copyright (C) ${2:`system('date +%Y')`} ${3:Christian Hergert} ${4:<chris@dronelabs.com>}
 	 *
