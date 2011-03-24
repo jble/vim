@@ -1,10 +1,14 @@
 set tw=0
-set ai
-set ci
 set ts=4
 set sw=4
 set noet
 set nowrap
+set ai
+set ci
+
+" Align arguments
+"imap { {<Esc>:GNOMEAlignArguments<CR>a
+nmap ,a :GNOMEAlignArguments<CR>
 
 " Include Syntax Files
 source $HOME/.vim/syntax/gtk.vim
