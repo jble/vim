@@ -92,3 +92,6 @@ nnoremap <F8> :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
 
 " Load ctags
 set tags=./tags,/usr/include/tags
+
+" Align arguments
+nmap ,a :GNOMEAlignArguments<CR>
