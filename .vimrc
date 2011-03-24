@@ -61,6 +61,10 @@ au BufRead,BufNewFile *.vala            setfiletype vala
 au BufRead,BufNewFile *.vapi            setfiletype vala
 au! Syntax vala source $VIM/vim73/syntax/cs.vim
 
+" Remove trailing whitespace for .c,.h
+autocmd BufWritePre *.c :%s/\s\+$//e
+autocmd BufWritePre *.h :%s/\s\+$//e
+
 " My RPC format
 au BufRead,BufNewFile *.rpc setfiletype rpc
 au! Syntax rpc source $HOME/.vim/syntax/rpc.vim
