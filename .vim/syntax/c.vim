@@ -3,8 +3,8 @@ set ts=4
 set sw=4
 set noet
 set nowrap
-set ai
-set ci
+set cindent
+set cinoptions=(0,u0,U0
 
 " Align arguments
 "imap { {<Esc>:GNOMEAlignArguments<CR>a
