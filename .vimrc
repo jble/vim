@@ -72,8 +72,8 @@ set nu
 set bs=2
 
 " Auto+Copy indent
-set ai
-set ci
+"set ai
+"set ci
 
 " Highlight searches
 set hlsearch
