@@ -5,6 +5,7 @@ set noet
 set nowrap
 set cindent
 set cinoptions=(0,u0,U0
+set smarttab
 
 " Align arguments
 "imap { {<Esc>:GNOMEAlignArguments<CR>a
