@@ -84,7 +84,8 @@ set hlsearch
 
 " Use 256 colormode jungle scheme
 set t_Co=256
-set background=light
+"set background=light
+set background=dark
 "colorscheme solarized
 colorscheme vividchalk
 
