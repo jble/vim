@@ -83,7 +83,7 @@ set bs=2
 set hlsearch
 
 " Use 256 colormode jungle scheme
-set t_CO=256
+set t_Co=256
 colorscheme jungle
 
 " Map make and clean
