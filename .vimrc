@@ -98,5 +98,6 @@ map <C-F7> <Esc>:!clear && make clean && make<CR>
 nnoremap <F8> :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
 
 " Load ctags
-set tags=./tags,../tags,../../tags,../../../tags,/usr/include/tags
+"set tags=./tags,../tags,../../tags,../../../tags,/usr/include/tags
+set tags=/home/jble/code/tags
 map <F12> <Esc>:!ctags --c-kinds=+p+l *<CR>
