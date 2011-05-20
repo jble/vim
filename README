@@ -1,5 +1,7 @@
 Hi There,
 
+you probably want to have exuberant ctags in your path before you use this.
+
 This is the vim setup I use on my machines.  I generally set it up by:
 
 1)  Install real vim (apt-get install vim-addon-manager) should get it all.
