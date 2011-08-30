@@ -94,6 +94,16 @@ map <F7> <Esc>:!clear && make<CR>
 map <F3> <Esc>:!clear && make run<CR>
 map <C-F7> <Esc>:!clear && make clean && make<CR>
 
+" Map run the current file
+map <F5> :call RunThisFile()<CR>
+func! RunThisFile()
+  "Save the file
+  exec "w" 
+  exec "! ./%"
+  "jump back where we were
+  exec "i
+endfunc
+
 " Highlight occurance of current word
 nnoremap <F8> :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
 
